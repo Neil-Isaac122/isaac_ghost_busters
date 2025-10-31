@@ -6,6 +6,7 @@
 #draw
 #sources:
 # https://chatgpt.com/g/g-p-68ffb42bcbc88191b18d019f16717c3d-computer-programming-project-neil/c/68ffb465-8ee4-832d-ba0a-39d2d01acab6 : for chasing
+# yay I can use github from VS CODE
 
 
 #Imports all the needed modules to do stuff and imports code from our other files
