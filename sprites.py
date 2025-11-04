@@ -162,7 +162,7 @@ class Mob(Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x * TILESIZE[0]
         self.rect.y = y * TILESIZE[1]
-        self.speed = 10
+        self.speed = 5
     def collide_with_walls(self, dir):
             if dir == 'x':
                 hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
@@ -190,16 +190,38 @@ class Mob(Sprite):
                     # self.rect.y = self.pos.y
                     # self.vel.y *= choice([-1, 1])
     def chase_player(self, dir):
-        if dir == 'x':
-            if self.game.player.pos.x > self.pos.x:
-                self.vel.x = abs(0.7 * self.game.player.vel.x)
-            elif self.game.player.pos.x < self.pos.x:
-                self.vel.x = -abs(0.7 * self.game.player.vel.x)
-        if dir == 'y':
-            if self.game.player.pos.y > self.pos.y:
-                self.vel.y = abs(0.7 * self.game.player.vel.y)
-            elif self.game.player.pos.y < self.pos.y:
-                self.vel.y = -abs(0.7 * self.game.player.vel.y)
+        #used chat gpt for help because my mobs were only moving when I moved
+            # Get player reference from game
+        player = self.game.player
+
+        # Vector pointing from mob to player
+        dir = player.pos - self.pos
+
+        # Normalize to length 1 so movement is consistent
+        if dir.length() > 0:
+            dir = dir.normalize()
+
+        # Move in that direction
+        self.vel = dir * self.speed
+
+        # Move on each axis separately so it collides with walls
+        self.pos.x += self.vel.x * self.game.dt
+        self.rect.x = self.pos.x
+        self.collide_with_walls('x')
+
+        self.pos.y += self.vel.y * self.game.dt
+        self.rect.y = self.pos.y
+        self.collide_with_walls('y')
+        # if dir == 'x':
+        #     if self.game.player.pos.x > self.pos.x:
+        #         self.vel.x = abs(0.7 * self.game.player.vel.x)
+        #     elif self.game.player.pos.x < self.pos.x:
+        #         self.vel.x = -abs(0.7 * self.game.player.vel.x)
+        # if dir == 'y':
+        #     if self.game.player.pos.y > self.pos.y:
+        #         self.vel.y = abs(0.7 * self.game.player.vel.y)
+        #     elif self.game.player.pos.y < self.pos.y:
+        #         self.vel.y = -abs(0.7 * self.game.player.vel.y)
 
 
         
