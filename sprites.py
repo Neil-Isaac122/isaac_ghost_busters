@@ -55,11 +55,12 @@ class Player(Sprite):
         # self.rect.y = y * TILESIZE[1]
         self.vel = vec(0,0)
         self.pos = vec(x,y) * TILESIZE[0]
-        self.speed = 300
+        self.speed = 200
         self.health = 100
         self.score = 0
         self.cd = Cooldown(1000)
-        self.bcd = Cooldown(250)
+        self.bcd = Cooldown(5000)
+        self.bcd1 = Cooldown(500)
         self.lastdir = "up"
         
     def update(self):
@@ -70,7 +71,10 @@ class Player(Sprite):
         if keys[pg.K_SPACE]:
             if self.bcd.ready():
                 self.bcd.start()
-                Bullet(self.game, self.rect.x, self.rect.y, self.lastdir)
+                self.bcd1.start()
+                self.speed = 400
+        if self.bcd1.ready():
+            self.speed = 200
         if keys[pg.K_w]:
             self.vel.y = -self.speed*self.game.dt
             self.lastdir = "up"
