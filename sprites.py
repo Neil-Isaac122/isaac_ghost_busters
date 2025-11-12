@@ -270,7 +270,25 @@ class Wall(Sprite):
         self.pos += self.vel
         self.rect.x = self.pos.x
         self.rect.y = self.pos.y
-       
+
+#Help from Kids Can Code: youtube
+class SquareGrid:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.walls = []
+        self.connections = [vec(1,0), vec(-1,0), vec(0,1), vec(0,-1)]
+
+    def in_bounds(self, node):
+        return 0 <= node.x < self.width and 0 <= node.y < self.height
+    
+    def passable(self, node):
+        return node not in self.walls
+    
+    def find_neighbors(self, node):
+        neighbors = [node + connection for connection in self.connections]
+        neighbors = filter(self.in_bounds, neighbors)
+        neighbors = filter(self.passable, neighbors)
 
 
 
