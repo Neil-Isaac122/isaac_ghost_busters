@@ -48,7 +48,7 @@ class Player(Sprite):
         self.groups = game.all_sprites
         Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((32, 32))
+        self.image = pg.Surface((20, 20))
         self.image.fill((GREEN))
         self.rect = self.image.get_rect()
         # self.rect.x = x * TILESIZE[0]
@@ -151,6 +151,17 @@ class Player(Sprite):
         else:
             self.image.fill(GREEN)
             print("ready")
+        
+        # --- PAC-MAN TUNNEL TELEPORT ---
+        # RIGHT → LEFT
+        if self.rect.left > WIDTH:
+            self.pos.x = -self.rect.width
+            self.rect.x = self.pos.x
+
+        # LEFT → RIGHT
+        if self.rect.right < 0:
+            self.pos.x = WIDTH
+            self.rect.x = self.pos.x
 
 #Creates Mob using same code as player but not controllable with keys
 class Mob(Sprite):
@@ -241,6 +252,14 @@ class Mob(Sprite):
         self.chase_player('y')
         # if self.game.player.vel.x > self.vel.x:
         #     self.vel.x = self.game.player.vel.x
+        # --- PAC-MAN TUNNEL TELEPORT FOR GHOSTS ---
+        if self.rect.left > WIDTH:
+            self.pos.x = -self.rect.width
+            self.rect.x = self.pos.x
+
+        if self.rect.right < 0:
+            self.pos.x = WIDTH
+            self.rect.x = self.pos.x
 #Creates coin using same code as mob but it doesnt move
 class Coin(Sprite):
     def __init__(self, game, x, y):
@@ -271,7 +290,7 @@ class Wall(Sprite):
         self.rect.x = self.pos.x
         self.rect.y = self.pos.y
 
-#Help from Kids Can Code: youtube
+#Help from Kids Can Code: youtube: https://www.youtube.com/watch?v=e3gbNOl4DiM
 class SquareGrid:
     def __init__(self, width, height):
         self.width = width
@@ -289,6 +308,7 @@ class SquareGrid:
         neighbors = [node + connection for connection in self.connections]
         neighbors = filter(self.in_bounds, neighbors)
         neighbors = filter(self.passable, neighbors)
+        return neighbors
 
 
 
