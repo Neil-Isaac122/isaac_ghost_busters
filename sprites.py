@@ -252,7 +252,7 @@ class Mob(Sprite):
         self.chase_player('y')
         # if self.game.player.vel.x > self.vel.x:
         #     self.vel.x = self.game.player.vel.x
-        # --- PAC-MAN TUNNEL TELEPORT FOR GHOSTS ---
+        #  Pacman tunnel through sides
         if self.rect.left > WIDTH:
             self.pos.x = -self.rect.width
             self.rect.x = self.pos.x

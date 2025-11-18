@@ -5,8 +5,7 @@
 #update
 #draw
 #sources:
-#https://chatgpt.com/g/g-p-68ffb42bcbc88191b18d019f16717c3d-computer-programming-project-neil/c/68ffb465-8ee4-832d-ba0a-39d2d01acab6: for chasing
-# yay I can use github from VS CODE
+
 
 
 #Imports all the needed modules to do stuff and imports code from our other files
@@ -113,6 +112,17 @@ class Game:
       pg.display.flip()
 
 
+   # makes a start screen that you can press any button to go to the game
+   def show_start_screen(self):
+      waiting = True
+      while waiting:
+         self.screen.fill(BLACK)
+         self.draw_text(self.screen, "NEIL'S AWESOME GAME", 50, WHITE, WIDTH // 2, HEIGHT // 3)
+         self.draw_text(self.screen, "Click to Start", 30, WHITE, WIDTH // 2, HEIGHT // 2)
+         self.draw_text(self.screen, "WASD to move • SPACE to boost", 25, WHITE, WIDTH // 2, HEIGHT // 2 + 50)
+         pg.display.flip()
+
+
 
 
 
@@ -121,5 +131,6 @@ class Game:
 if __name__ == "__main__":
 #    creating an instance or instantiating the Game class
    g = Game()
+   g.show_start_screen()
    g.new()
    g.run()
