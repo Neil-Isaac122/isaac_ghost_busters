@@ -73,6 +73,7 @@ class Player(Sprite):
                 self.bcd.start()
                 self.bcd1.start()
                 self.speed = 400
+                self.game.boost_sound.play()
         if self.bcd1.ready():
             self.speed = 200
         if keys[pg.K_w]:

@@ -23,6 +23,7 @@ health = 100
 class Game:
    def __init__(self):
       pg.init()
+      pg.mixer.init()
       #sets up a clock for fps and time and set
       self.clock = pg.time.Clock()
       self.screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -33,6 +34,9 @@ class Game:
    # gives the Game class a map property which uses the Map class to go through the level1.txt file
    def load_data(self):
       self.game_folder = path.dirname(__file__)
+      #code from mr. cozort
+      self.snd_folder = path.join(self.game_folder, 'sounds')
+      self.boost_sound = pg.mixer.Sound(path.join(self.snd_folder, 'boost-100537.mp3'))
       self.map = Map(path.join(self.game_folder, 'level1.txt'))
 
    def draw_text(self, surface, text, size, color, x, y):
@@ -117,12 +121,17 @@ class Game:
       waiting = True
       while waiting:
          self.screen.fill(BLACK)
-         self.draw_text(self.screen, "NEIL'S AWESOME GAME", 50, WHITE, WIDTH // 2, HEIGHT // 3)
+         self.draw_text(self.screen, "Ghost Busters", 50, WHITE, WIDTH // 2, HEIGHT // 3)
          self.draw_text(self.screen, "Click to Start", 30, WHITE, WIDTH // 2, HEIGHT // 2)
          self.draw_text(self.screen, "WASD to move • SPACE to boost", 25, WHITE, WIDTH // 2, HEIGHT // 2 + 50)
          pg.display.flip()
-
-
+         #Got help from chat gpt to click out of start screen
+         for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                sys.exit()
+            if event.type == pg.MOUSEBUTTONDOWN or event.type == pg.KEYDOWN:
+                waiting = False
 
 
 
