@@ -38,6 +38,8 @@ class Game:
       self.snd_folder = path.join(self.game_folder, 'sounds')
       self.boost_sound = pg.mixer.Sound(path.join(self.snd_folder, 'boost-100537.mp3'))
       self.map = Map(path.join(self.game_folder, 'level1.txt'))
+      if self.all_coins == 10:
+         self.map.Map(path.join(self.game_folder, 'level2.txt'))
 
    def draw_text(self, surface, text, size, color, x, y):
       font_name = pg.font.match_font('arial')
