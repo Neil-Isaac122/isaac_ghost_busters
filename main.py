@@ -37,9 +37,9 @@ class Game:
       #code from mr. cozort
       self.snd_folder = path.join(self.game_folder, 'sounds')
       self.boost_sound = pg.mixer.Sound(path.join(self.snd_folder, 'boost-100537.mp3'))
+      self.portal_sound = pg.mixer.Sound(path.join(self.snd_folder, 'sci-fi-portal-jump-04-416161 (1).mp3'))
       self.map = Map(path.join(self.game_folder, 'level1.txt'))
-      if self.all_coins == 10:
-         self.map.Map(path.join(self.game_folder, 'level2.txt'))
+
 
    def draw_text(self, surface, text, size, color, x, y):
       font_name = pg.font.match_font('arial')
@@ -71,6 +71,8 @@ class Game:
                Coin(self, col, row)
             elif tile == 'P':
                self.player = Player(self, col, row)
+            elif tile == 'p':
+               self.player = Player_2(self, col, row)
             elif tile == 'M':
                Mob(self, col, row)
 

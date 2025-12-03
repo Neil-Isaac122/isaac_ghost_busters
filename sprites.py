@@ -69,11 +69,13 @@ class Player(Sprite):
         self.vel = vec(0,0)
         keys = pg.key.get_pressed()
         if keys[pg.K_SPACE]:
+            # cooldown for how long boost is
             if self.bcd.ready():
                 self.bcd.start()
                 self.bcd1.start()
                 self.speed = 400
                 self.game.boost_sound.play()
+            # cooldown for how long before you can boost
         if self.bcd1.ready():
             self.speed = 200
         if keys[pg.K_w]:
@@ -158,11 +160,138 @@ class Player(Sprite):
         if self.rect.left > WIDTH:
             self.pos.x = -self.rect.width
             self.rect.x = self.pos.x
+            self.game.portal_sound.play()
 
         # LEFT → RIGHT
         if self.rect.right < 0:
             self.pos.x = WIDTH
             self.rect.x = self.pos.x
+            self.game.portal_sound.play()
+
+class Player_2(Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites
+        Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((20, 20))
+        self.image.fill((GREEN))
+        self.rect = self.image.get_rect()
+        # self.rect.x = x * TILESIZE[0]
+        # self.rect.y = y * TILESIZE[1]
+        self.vel = vec(0,0)
+        self.pos = vec(x,y) * TILESIZE[0]
+        self.speed = 200
+        self.health = 100
+        self.score = 0
+        self.cd = Cooldown(1000)
+        self.bcd = Cooldown(5000)
+        self.bcd1 = Cooldown(500)
+        self.lastdir = "up"
+        
+    def update(self):
+        pass
+    def get_keys(self):
+        self.vel = vec(0,0)
+        keys = pg.key.get_pressed()
+        if keys[pg.K_k]:
+            # cooldown for how long boost is
+            if self.bcd.ready():
+                self.bcd.start()
+                self.bcd1.start()
+                self.speed = 400
+                self.game.boost_sound.play()
+            # cooldown for how long before you can boost
+        if self.bcd1.ready():
+            self.speed = 200
+        if keys[pg.K_UP]:
+            self.vel.y = -self.speed*self.game.dt
+            self.lastdir = "up"
+            # self.rect.y -= self.speed
+        if keys[pg.K_LEFT]:
+            self.vel.x = -self.speed*self.game.dt
+            self.lastdir = "left"
+            # self.rect.x -= self.speed
+        if keys[pg.K_DOWN]:
+            self.vel.y = self.speed*self.game.dt
+            self.lastdir = "down"
+            # self.rect.y += self.speed
+        if keys[pg.K_RIGHT]:
+            self.vel.x = self.speed*self.game.dt
+            self.lastdir = "right"
+            # self.rect.x += self.speed
+        # accounting for diagonal movement
+        if self.vel.x != 0 and self.vel.y != 0:
+            self.vel *= 0.7071
+
+    def collide_with_walls(self, dir):
+        if dir == 'x':
+            hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
+            if hits:
+            # uses collide with walls to check if wall is moveable and then changing its velocity based on that
+                if self.vel.x > 0:
+                    self.pos.x = hits[0].rect.left - self.rect.width
+                        
+                if self.vel.x < 0:
+                    self.pos.x = hits[0].rect.right
+                self.vel.x = 0
+                    
+                self.rect.x = self.pos.x
+            
+        if dir == 'y':
+            hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
+            if hits:
+                if self.vel.y > 0:
+                    self.pos.y = hits[0].rect.top - self.rect.height
+                if self.vel.y < 0:
+                    self.pos.y = hits[0].rect.bottom
+                self.vel.y = 0
+                self.rect.y = self.pos.y
+                
+
+
+    def collide_with_stuff(self, group, kill):
+        #constantly checking whether a spirte has collided with a certain group
+        hits = pg.sprite.spritecollide(self, group, kill)
+        if hits: 
+            if str(hits[0].__class__.__name__) == "Mob":
+                print("i collided with a mob")
+                if self.cd.ready():
+                    self.health -= 10
+                    self.cd.start()
+
+                if self.health == 0:
+                    pg.quit()
+            if str(hits[0].__class__.__name__) == "Coin":
+                self.score += 1    
+    def update(self):
+        self.get_keys()
+        self.pos += self.vel
+        self.rect.x = self.pos.x
+        self.collide_with_walls('x')
+        self.rect.y = self.pos.y
+        self.collide_with_walls('y')
+
+        self.collide_with_stuff(self.game.all_mobs, False)
+        self.collide_with_stuff(self.game.all_coins, True)
+        if not self.cd.ready():
+            self.image.fill(BLUE)
+            print("not ready")
+        else:
+            self.image.fill(GREEN)
+            print("ready")
+        
+        # --- PAC-MAN TUNNEL TELEPORT ---
+        # RIGHT → LEFT
+        if self.rect.left > WIDTH:
+            self.pos.x = -self.rect.width
+            self.rect.x = self.pos.x
+            self.game.portal_sound.play()
+
+        # LEFT → RIGHT
+        if self.rect.right < 0:
+            self.pos.x = WIDTH
+            self.rect.x = self.pos.x
+            self.game.portal_sound.play()
 
 #Creates Mob using same code as player but not controllable with keys
 class Mob(Sprite):
