@@ -29,6 +29,10 @@ class Game:
       self.screen = pg.display.set_mode((WIDTH, HEIGHT))
       pg.display.set_caption("Neil Isaac's awesome game!!!!!")
       self.playing = True
+
+      #mob freeze chat gpt help with idea
+      self.freeze_mobs = False
+      self.freeze_cd = Cooldown(3000)
    
    #  sets up a game folder directory path that uses the currend foler and contains THIS file
    # gives the Game class a map property which uses the Map class to go through the level1.txt file
@@ -57,6 +61,7 @@ class Game:
       self.all_mobs = pg.sprite.Group()
       self.all_coins = pg.sprite.Group()
       self.all_walls = pg.sprite.Group()
+      self.all_freezes = pg.sprite.Group()
       #instantiation of a class
 
       
@@ -75,6 +80,8 @@ class Game:
                self.player = Player_2(self, col, row)
             elif tile == 'M':
                Mob(self, col, row)
+            elif tile == 'F':
+               FreezePowerUp(self, col, row)
 
 
 
@@ -103,6 +110,9 @@ class Game:
    def update(self):
       self.all_sprites.update()
       #Time in seconds
+
+      if self.freeze_mobs and self.freeze_cd.ready():
+         self.freeze_mobs = False
       seconds = pg.time.get_ticks()//1000
       #countdown by subtractiing from total seconds
       countdown = 20

@@ -69,6 +69,7 @@ class Player(Sprite):
         self.vel = vec(0,0)
         keys = pg.key.get_pressed()
         if keys[pg.K_SPACE]:
+            #help from declan
             # cooldown for how long boost is
             if self.bcd.ready():
                 self.bcd.start()
@@ -138,6 +139,11 @@ class Player(Sprite):
                     pg.quit()
             if str(hits[0].__class__.__name__) == "Coin":
                 self.score += 1    
+
+            if str(hits[0].__class__.__name__) == "FreezePowerUp":
+                self.game.freeze_mobs = True
+                self.game.freeze_cd.start()
+
     def update(self):
         self.get_keys()
         self.pos += self.vel
@@ -148,6 +154,7 @@ class Player(Sprite):
 
         self.collide_with_stuff(self.game.all_mobs, False)
         self.collide_with_stuff(self.game.all_coins, True)
+        self.collide_with_stuff(self.game.all_freezes, True) 
         if not self.cd.ready():
             self.image.fill(BLUE)
             print("not ready")
@@ -263,6 +270,11 @@ class Player_2(Sprite):
                     pg.quit()
             if str(hits[0].__class__.__name__) == "Coin":
                 self.score += 1    
+                
+            if str(hits[0].__class__.__name__) == "FreezePowerUp":
+                self.game.freeze_mobs = True
+                self.game.freeze_cd.start()
+
     def update(self):
         self.get_keys()
         self.pos += self.vel
@@ -273,6 +285,7 @@ class Player_2(Sprite):
 
         self.collide_with_stuff(self.game.all_mobs, False)
         self.collide_with_stuff(self.game.all_coins, True)
+        self.collide_with_stuff(self.game.all_freezes, True) 
         if not self.cd.ready():
             self.image.fill(BLUE)
             print("not ready")
@@ -372,6 +385,10 @@ class Mob(Sprite):
         
 
     def update(self):
+        #if freeze is on do nothing
+        if self.game.freeze_mobs:
+            return
+
         #mob behavior
         self.pos += self.vel
         self.rect.x = self.pos.x
@@ -419,6 +436,18 @@ class Wall(Sprite):
         self.pos += self.vel
         self.rect.x = self.pos.x
         self.rect.y = self.pos.y
+    
+
+class FreezePowerUp(Sprite):
+    def __init__(self, game, x, y):
+        self.game = game
+        self.groups = game.all_sprites, game.all_freezes
+        Sprite.__init__(self, self.groups)
+        self.image = pg.Surface(TILESIZE)
+        self.image.fill((0, 255, 255))   
+        self.rect = self.image.get_rect()
+        self.rect.x = x * TILESIZE[0]
+        self.rect.y = y * TILESIZE[1]
 
 #Help from Kids Can Code: youtube: https://www.youtube.com/watch?v=e3gbNOl4DiM
 class SquareGrid:
