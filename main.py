@@ -33,6 +33,8 @@ class Game:
       #mob freeze chat gpt help with idea
       self.freeze_mobs = False
       self.freeze_cd = Cooldown(3000)
+
+      self.level = 1
    
    #  sets up a game folder directory path that uses the currend foler and contains THIS file
    # gives the Game class a map property which uses the Map class to go through the level1.txt file
@@ -42,8 +44,33 @@ class Game:
       self.snd_folder = path.join(self.game_folder, 'sounds')
       self.boost_sound = pg.mixer.Sound(path.join(self.snd_folder, 'boost-100537.mp3'))
       self.portal_sound = pg.mixer.Sound(path.join(self.snd_folder, 'sci-fi-portal-jump-04-416161 (1).mp3'))
+      filename = f"level{self.level}.txt"
       self.map = Map(path.join(self.game_folder, 'level1.txt'))
 
+
+
+   #help from mr. cozort
+   def new_level(self, level):
+      self.map = Map(path.join(self.game_folder, 'level2.txt'))
+      for sprite in self.all_sprites:
+         sprite.kill()
+
+      for row, tiles, in enumerate(self.map.data):
+         print(row)
+         for col, tile, in enumerate(tiles):
+            print(col)
+            if tile == '1':
+               Wall(self, col, row, "")
+            if tile == 'C':
+               Coin(self, col, row)
+            elif tile == 'P':
+               self.player = Player(self, col, row)
+            elif tile == 'p':
+               self.player = Player_2(self, col, row)
+            elif tile == 'M':
+               Mob(self, col, row)
+            elif tile == 'F':
+               FreezePowerUp(self, col, row)
 
    def draw_text(self, surface, text, size, color, x, y):
       font_name = pg.font.match_font('arial')
@@ -120,6 +147,10 @@ class Game:
       if self.time <= 0:
          pg.quit
 
+      #new level when all coins gone
+      if len(self.all_coins) == 0:
+        self.new_level("level2.txt")
+   
 
    def draw(self):
       self.screen.fill(WHITE)
