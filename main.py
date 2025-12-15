@@ -65,8 +65,6 @@ class Game:
                Coin(self, col, row)
             elif tile == 'P':
                self.player = Player(self, col, row)
-            elif tile == 'p':
-               self.player = Player_2(self, col, row)
             elif tile == 'M':
                Mob(self, col, row)
             elif tile == 'F':
@@ -103,8 +101,6 @@ class Game:
                Coin(self, col, row)
             elif tile == 'P':
                self.player = Player(self, col, row)
-            elif tile == 'p':
-               self.player = Player_2(self, col, row)
             elif tile == 'M':
                Mob(self, col, row)
             elif tile == 'F':
